@@ -1,0 +1,152 @@
+<h3>Pagina de Clientes</h3>
+
+<button class="btn btn-primary" (click)="refresh()"> Refrescar la tabla</button>
+
+<div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
+    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+    <input #gb type="text" pInputText size="50" placeholder="Buscar en todos los clientes">
+</div>
+
+<button class="btn btn-primary" (click)="addModal()" data-toggle="modal" data-target="#myModal"> Añadir Cliente  </button>
+<button class="btn btn-primary" (click)="delete()"> Eliminar Cliente </button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#myModal"> Editar Cliente </button>
+
+<button class="btn btn-primary" type="button" pButton (click)="updateDt(dt)" label="Reset"> LIMPIAR FILTROS DE LA TABLA  </button>
+
+<p-dataTable #dt emptyMessage="No se encontraron registros" selectionMode="single" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" [value]="clients" [globalFilter]="gb" [responsive]="true">
+    <p-column field="dni" header="DNI" [sortable]="true"></p-column>
+    <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+    <p-column field="apellidos" header="Apellidos" [sortable]="true"></p-column>
+    <p-column field="nacimiento" header="Edad" [sortable]="true">
+            <template let-client="rowData" pTemplate type="body">
+                <!--<span>{{client.nacimiento | date: 'dd/MM/yyyy'}}</span>-->
+                <span>{{obtenerEdad(client.nacimiento)}}</span>
+            </template>
+    </p-column>
+    <p-column field="direccion" header="Dirección" [sortable]="true"></p-column>
+   
+    <p-column field="celular" header="Celular"></p-column>
+    <p-column field="sexo" header="Sexo" [sortable]="true">
+        <template let-client="rowData" pTemplate type="body">
+            {{client.sexo == 1 ? "Femenino" : "Masculino"}}
+        </template>
+
+    </p-column>
+    <p-column field="id_sede" header="Sede" [sortable]="true"></p-column>
+</p-dataTable>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Cliente</h4>
+      </div>
+      <div class="modal-body">
+
+        <form>
+            <div  class="form-group row" >
+                <label for="example-text-input" class="col-2 col-form-label">DNI</label>
+                <div class="col-10">
+                    <input id="dni" class="form-control" [(ngModel)]="selected.dni" name="dni" disabled>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-search-input" class="col-2 col-form-label">Nombre</label>
+                <div class="col-10">
+                <input class="form-control" [(ngModel)]="selected.nombre" name="nombre">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-email-input" class="col-2 col-form-label">Apellidos</label>
+                <div class="col-10">
+                <input class="form-control" [(ngModel)]="selected.apellidos" name="apellidos">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label">Edad</label>
+                <div class="col-10">
+                    <input class="form-control" value="{{obtenerEdad(selected.nacimiento)}}" disabled>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-tel-input" class="col-2 col-form-label">Fecha de Nacimiento</label>
+                <div class="col-10">
+                    <input class="form-control" [(ngModel)]="selected.nacimiento" name="nacimiento">
+                    <input class="form-control" value="{{selected.nacimiento | date: 'dd/MM/yyyy'}}">
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label">Direccion</label>
+                <div class="col-10">
+                <input class="form-control" [(ngModel)]="selected.direccion" name="direccion">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label">Telefono</label>
+                <div class="col-10">
+                    <input class="form-control" [(ngModel)]="selected.telefono" name="telefono">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label">Celular</label>
+                <div class="col-10">
+                    <input class="form-control" [(ngModel)]="selected.celular" name="celular">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label">Sexo</label>
+                <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default" id="masculino" (click)="gender(0)">
+                    <input type="radio" value="0">Masculino</label>
+                <label class="btn btn-default" id="femenino"  (click)="gender(1)">
+                    <input type="radio" value="1">Femenino</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label">Correo</label>
+                <div class="col-10">
+                    <input class="form-control" [(ngModel)]="selected.correo" name="correo">
+                </div>
+            </div>
+
+            <div id="sede" class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label" >Sede de Inscripción</label>
+                <div class="col-10">
+                    <input class="form-control" [(ngModel)]="selected.id_sede" name="id_sede">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-url-input" class="col-2 col-form-label">Fecha de Inscripción</label>
+                <div class="col-10">
+                    <input class="form-control" [(ngModel)]="selected.creacion" name="creacion" disabled>
+                </div>
+            </div>
+        </form>
+       
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Close</button>  
+        <button id="btnAdd" class="btn btn-primary" (click)="add()" hidden>Añadir Cliente</button>
+        <button class="btn btn-primary" (click)="save()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+
+
+
+</div>
