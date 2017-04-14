@@ -3,6 +3,7 @@ export class Usuario{
     dni:string;
     nombre:string;
     apellidos:string;
+    codigo:string;
     contrasena:string;
     creacion:string;
 }

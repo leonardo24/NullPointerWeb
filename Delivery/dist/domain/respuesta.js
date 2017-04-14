@@ -1,7 +1,7 @@
 "use strict";
 var Respuesta = (function () {
-    function Respuesta(status, data, error) {
-        this.status = status;
+    function Respuesta(code, data, error) {
+        this.code = code;
         this.data = data;
         this.error = error;
     }

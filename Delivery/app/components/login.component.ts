@@ -22,11 +22,12 @@ import { Respuesta } from '../domain/respuesta';
 export class LoginComponent { 
 
   private user = new Usuario(); // Inicializa la variable
+  private key = 'NullPointers_Key';
   private result : Respuesta;
 
   constructor(private soapService: SoapService, private router: Router) { 
-    this.user.dni = '48774327';
-    this.user.contrasena = '123456';
+    this.user.codigo = 'leo';
+    this.user.contrasena = '123';
   }
 
   ngOnInit() {
@@ -37,7 +38,35 @@ export class LoginComponent {
 
   userLogin(){
 
-  this.soapService.login("loginUsuario", this.user.dni, this.user.contrasena, function(result){
+
+  this.soapService.loginUsuario("LoginUsuario", this.user.codigo, this.user.contrasena)
+                .subscribe(
+                  result => {
+
+                   this.result = JSON.parse(result);
+                   console.log(this.result)
+                   
+                   if(this.result.code == 100){
+                        window.localStorage.setItem(this.key, "1sdf4safsadfsd874f89sd4f89");
+                        this.router.navigate(['/dashboard']);
+                    }else{
+                      //mensaje de alerta
+                    }
+
+                  },
+                  err => {
+                  console.log(err);
+                  });
+
+
+
+}
+
+
+
+
+
+  /*this.soapService.login("loginUsuario", this.user.dni, this.user.contrasena, function(result){
       
       if(result != null){
 
@@ -59,14 +88,7 @@ export class LoginComponent {
 
     });
 
-  }
-
-}
-
-
-
-
-
+  }*/
 
 
 
@@ -94,3 +116,5 @@ export class LoginComponent {
                               });
     }
   */
+
+}
