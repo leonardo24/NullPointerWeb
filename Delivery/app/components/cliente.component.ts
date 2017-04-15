@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { LoginService } from '../services/login.service';
-import { HttpService } from '../services/http.service';
+import { SoapService } from '../services/soap.service';
 import { Cliente } from '../domain/cliente';
-import { Respuesta } from '../domain/respuesta';
+import { Producto } from '../domain/producto';
 import { DataTable } from 'primeng/primeng';
 
 @Component({
@@ -13,12 +12,11 @@ import { DataTable } from 'primeng/primeng';
 
 export class ClienteComponent{
 
-    private result : Respuesta;
-    clients: Cliente[];
-    private selected = new Cliente();
+    productos: Producto[];
+    private selected = new Producto();
     private row = new Cliente();
 
-    constructor(private loginService: LoginService, private httpService: HttpService) { 
+    constructor(private soapService: SoapService) { 
 
     }
 
@@ -28,21 +26,18 @@ export class ClienteComponent{
 
     obtenerClientes(){
 
-         this.loginService.getClientes()
-                     .subscribe(
-                        result => {
-                        this.result = result;
-
-                        console.log("Mi info : " + this.result.data);
-                        this.clients = JSON.parse(this.result.data);
-                     
-                        },
-                        err => {
-                        console.log(err);
-                        });
+           this.soapService.obtenerProductos("ListarProductos")
+                .subscribe(
+                  result => {
+                    console.log(result);
+                    this.productos = JSON.parse(result);
+                  },
+                  err => {
+                  console.log(err);
+                  });
 
     }
-    
+
     refresh(){
         this.obtenerClientes();
     }
@@ -51,27 +46,37 @@ export class ClienteComponent{
 
         this.row = Object.assign({}, event.data); // copiado
         this.selected = event.data;
-
-         if (this.selected.sexo == 0){
-            $("#masculino").addClass("active");
-            $("#femenino").removeClass("active");
-         } else{
-            $("#masculino").removeClass("active");
-            $("#femenino").addClass("active");
-         } 
-
+        console.log(this.selected.Id);
+        
     }
 
-    gender(sexo){
-        this.selected.sexo = sexo;
+    delete(){
+
+        this.soapService.eliminarProducto("EliminarProducto", this.selected.Id)
+            .subscribe(
+                result => {
+                console.log(result);
+
+                var index = this.productos.map(function(x) {return x.Id; }).indexOf(this.selected.Id);
+                                if (index > -1) {
+                                    this.productos.splice(index, 1);
+                                }
+                                this.selected = new Producto();
+
+                },
+                err => {
+                console.log(err);
+                });
+
+        
     }
-    
+
     onRowDblclick(event){
         console.log("doble click!");
         // SHOW MODAL
     }
 
-    save(){
+    /*save(){
 
         this.loginService.updateCliente(this.selected)
                          .subscribe(
@@ -84,25 +89,25 @@ export class ClienteComponent{
                             err => {
                                 console.log(err);
                             });
-    }
+    }*/
 
 
     addModal(){
         //Mostrar Modal Vacio
 
-         this.selected = new Cliente();
+         this.selected = new Producto();
          $("#dni").removeAttr("disabled");
          $("#btnAdd").removeAttr("hidden");
 
-         this.selected.sexo = 0;            // Sexo por default
-         this.selected.contrasena = "factory";      // Contraseña por defecto
-         this.selected.g_ruc = "10487743271";       // RUC POR DEFECTO
+         //this.selected.sexo = 0;            // Sexo por default
+         //this.selected.contrasena = "factory";      // Contraseña por defecto
+         //this.selected.g_ruc = "10487743271";       // RUC POR DEFECTO
          
     }
 
     // CRUD
 
-    add(){
+   /* add(){
         
         this.httpService.post("/cliente", this.selected )
                          .subscribe(
@@ -127,41 +132,16 @@ export class ClienteComponent{
         
     }
 
-    delete(){
-
-        this.httpService.delete("/cliente", this.selected.id )
-                         .subscribe(
-                            result => {
-
-                                this.result = result;
-
-                                if(this.result.status == 100){
-                                    
-                                    var index = this.clients.map(function(x) {return x.id; }).indexOf(this.selected.id);
-                                    if (index > -1) {
-                                        this.clients.splice(index, 1);
-                                    }
-                                    this.selected = new Cliente();
-                                
-                                }
-
-                                console.log("Mi info : " + this.result.status);
-
-                            },
-                            err => {
-                                console.log(err);
-                            });
-        
-    }
+    
 
     updateDt(dt: DataTable) {
         dt.reset();
-    }   
+    }   */
 
     cancel(){
 
         Object.assign(this.selected, this.row);
-        this.selected = new Cliente();
+        this.selected = new Producto();
     }
  
     

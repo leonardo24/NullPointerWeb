@@ -1,9 +1,9 @@
 export class Usuario{
-    id:number;
-    dni:string;
-    nombre:string;
-    apellidos:string;
-    codigo:string;
-    contrasena:string;
-    creacion:string;
+    Id:number;
+    Dni:string;
+    Nombre:string;
+    Apellidos:string;
+    Codigo:string;
+    Contrasena:string;
+    Telefono:string;
 }

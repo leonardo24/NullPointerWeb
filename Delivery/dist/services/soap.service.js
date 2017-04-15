@@ -18,7 +18,8 @@ require('rxjs/add/operator/catch');
 var SoapService = (function () {
     function SoapService(http) {
         this.http = http;
-        this.url = "http://localhost:3401/Usuarios.svc";
+        this.url_Usuarios = "http://localhost:3401/Usuarios.svc";
+        this.url_Productos = "http://localhost:3401/Productos.svc";
         this.key = 'NullPointers_Key';
     }
     SoapService.prototype.isLogged = function () {
@@ -28,7 +29,6 @@ var SoapService = (function () {
         return false;
     };
     SoapService.prototype.loginUsuario = function (metodo, codigo, contrasena) {
-        var parser = new DOMParser();
         var soapData = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
             '<s:Body>' +
             '<' + metodo + ' xmlns="http://tempuri.org/">' +
@@ -41,7 +41,38 @@ var SoapService = (function () {
         headers.append('Content-Type', 'text/xml');
         headers.append('Accept', 'text/xml');
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(this.url, soapData, options)
+        return this.http.post(this.url_Usuarios, soapData, options)
+            .map(function (res) { return $(res.text()).find(metodo + 'Result').text(); })
+            .catch(function (error) { return Rx_1.Observable.throw(error.json().error || 'Server error'); });
+    };
+    SoapService.prototype.obtenerProductos = function (metodo) {
+        var soapData = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
+            '<s:Body>' +
+            '<' + metodo + ' xmlns="http://tempuri.org/">' +
+            '</' + metodo + '>' +
+            '</s:Body>' +
+            '</s:Envelope>';
+        var headers = new http_1.Headers({ 'SOAPAction': 'http://tempuri.org/IProductos/' + metodo });
+        headers.append('Content-Type', 'text/xml');
+        headers.append('Accept', 'text/xml');
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.url_Productos, soapData, options)
+            .map(function (res) { return $(res.text()).find(metodo + 'Result').text(); })
+            .catch(function (error) { return Rx_1.Observable.throw(error.json().error || 'Server error'); });
+    };
+    SoapService.prototype.eliminarProducto = function (metodo, id) {
+        var soapData = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
+            '<s:Body>' +
+            '<' + metodo + ' xmlns="http://tempuri.org/">' +
+            '<id>' + id + '</id>' +
+            '</' + metodo + '>' +
+            '</s:Body>' +
+            '</s:Envelope>';
+        var headers = new http_1.Headers({ 'SOAPAction': 'http://tempuri.org/IProductos/' + metodo });
+        headers.append('Content-Type', 'text/xml');
+        headers.append('Accept', 'text/xml');
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.url_Productos, soapData, options)
             .map(function (res) { return $(res.text()).find(metodo + 'Result').text(); })
             .catch(function (error) { return Rx_1.Observable.throw(error.json().error || 'Server error'); });
     };

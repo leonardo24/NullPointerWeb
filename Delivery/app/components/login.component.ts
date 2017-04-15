@@ -13,7 +13,6 @@ import { Respuesta } from '../domain/respuesta';
   moduleId: module.id,
   selector: 'login',
   templateUrl: '../../templates/login.html',
-  styleUrls: [ '../../css/animate.css' ],
   providers: [ SoapService ]
 
 })
@@ -23,11 +22,10 @@ export class LoginComponent {
 
   private user = new Usuario(); // Inicializa la variable
   private key = 'NullPointers_Key';
-  private result : Respuesta;
 
   constructor(private soapService: SoapService, private router: Router) { 
-    this.user.codigo = 'leo';
-    this.user.contrasena = '123';
+    this.user.Codigo = 'leo';
+    this.user.Contrasena = '123';
   }
 
   ngOnInit() {
@@ -39,14 +37,15 @@ export class LoginComponent {
   userLogin(){
 
 
-  this.soapService.loginUsuario("LoginUsuario", this.user.codigo, this.user.contrasena)
+  this.soapService.loginUsuario("LoginUsuario", this.user.Codigo, this.user.Contrasena)
                 .subscribe(
                   result => {
 
-                   this.result = JSON.parse(result);
-                   console.log(this.result)
+                   var usuario = new Usuario();
+                   usuario = JSON.parse(result);
+                   console.log(usuario);
                    
-                   if(this.result.code == 100){
+                   if(usuario.Id > 0){
                         window.localStorage.setItem(this.key, "1sdf4safsadfsd874f89sd4f89");
                         this.router.navigate(['/dashboard']);
                     }else{

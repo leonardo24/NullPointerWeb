@@ -9,14 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var login_service_1 = require('../services/login.service');
-var http_service_1 = require('../services/http.service');
+var soap_service_1 = require('../services/soap.service');
 var cliente_1 = require('../domain/cliente');
+var producto_1 = require('../domain/producto');
 var ClienteComponent = (function () {
-    function ClienteComponent(loginService, httpService) {
-        this.loginService = loginService;
-        this.httpService = httpService;
-        this.selected = new cliente_1.Cliente();
+    function ClienteComponent(soapService) {
+        this.soapService = soapService;
+        this.selected = new producto_1.Producto();
         this.row = new cliente_1.Cliente();
     }
     ClienteComponent.prototype.ngOnInit = function () {
@@ -24,11 +23,10 @@ var ClienteComponent = (function () {
     };
     ClienteComponent.prototype.obtenerClientes = function () {
         var _this = this;
-        this.loginService.getClientes()
+        this.soapService.obtenerProductos("ListarProductos")
             .subscribe(function (result) {
-            _this.result = result;
-            console.log("Mi info : " + _this.result.data);
-            _this.clients = JSON.parse(_this.result.data);
+            console.log(result);
+            _this.productos = JSON.parse(result);
         }, function (err) {
             console.log(err);
         });
@@ -39,82 +37,83 @@ var ClienteComponent = (function () {
     ClienteComponent.prototype.onRowSelect = function (event) {
         this.row = Object.assign({}, event.data); // copiado
         this.selected = event.data;
-        if (this.selected.sexo == 0) {
-            $("#masculino").addClass("active");
-            $("#femenino").removeClass("active");
-        }
-        else {
-            $("#masculino").removeClass("active");
-            $("#femenino").addClass("active");
-        }
+        console.log(this.selected.Id);
     };
-    ClienteComponent.prototype.gender = function (sexo) {
-        this.selected.sexo = sexo;
+    ClienteComponent.prototype.delete = function () {
+        var _this = this;
+        this.soapService.eliminarProducto("EliminarProducto", this.selected.Id)
+            .subscribe(function (result) {
+            console.log(result);
+            var index = _this.productos.map(function (x) { return x.Id; }).indexOf(_this.selected.Id);
+            if (index > -1) {
+                _this.productos.splice(index, 1);
+            }
+            _this.selected = new producto_1.Producto();
+        }, function (err) {
+            console.log(err);
+        });
     };
     ClienteComponent.prototype.onRowDblclick = function (event) {
         console.log("doble click!");
         // SHOW MODAL
     };
-    ClienteComponent.prototype.save = function () {
-        var _this = this;
+    /*save(){
+
         this.loginService.updateCliente(this.selected)
-            .subscribe(function (result) {
-            _this.result = result;
-            console.log("Mi info : " + _this.result.status);
-            _this.selected = new cliente_1.Cliente();
-        }, function (err) {
-            console.log(err);
-        });
-    };
+                         .subscribe(
+                            result => {
+
+                                this.result = result;
+                                console.log("Mi info : " + this.result.status);
+                                this.selected = new Cliente();
+                            },
+                            err => {
+                                console.log(err);
+                            });
+    }*/
     ClienteComponent.prototype.addModal = function () {
         //Mostrar Modal Vacio
-        this.selected = new cliente_1.Cliente();
+        this.selected = new producto_1.Producto();
         $("#dni").removeAttr("disabled");
         $("#btnAdd").removeAttr("hidden");
-        this.selected.sexo = 0; // Sexo por default
-        this.selected.contrasena = "factory"; // Contraseña por defecto
-        this.selected.g_ruc = "10487743271"; // RUC POR DEFECTO
+        //this.selected.sexo = 0;            // Sexo por default
+        //this.selected.contrasena = "factory";      // Contraseña por defecto
+        //this.selected.g_ruc = "10487743271";       // RUC POR DEFECTO
     };
     // CRUD
-    ClienteComponent.prototype.add = function () {
-        var _this = this;
-        this.httpService.post("/cliente", this.selected)
-            .subscribe(function (result) {
-            _this.result = result;
-            console.log("Mi info : " + _this.result.status);
-            if (_this.result.status == 100) {
-                // MENSAJE SATISFACTORIO
-                _this.selected.id = _this.result.data;
-                _this.clients.push(_this.selected); // Se le asigna la ID con la que se inserto
-                _this.selected = new cliente_1.Cliente();
-            }
-        }, function (err) {
-            console.log(err);
-        });
-    };
-    ClienteComponent.prototype.delete = function () {
-        var _this = this;
-        this.httpService.delete("/cliente", this.selected.id)
-            .subscribe(function (result) {
-            _this.result = result;
-            if (_this.result.status == 100) {
-                var index = _this.clients.map(function (x) { return x.id; }).indexOf(_this.selected.id);
-                if (index > -1) {
-                    _this.clients.splice(index, 1);
-                }
-                _this.selected = new cliente_1.Cliente();
-            }
-            console.log("Mi info : " + _this.result.status);
-        }, function (err) {
-            console.log(err);
-        });
-    };
-    ClienteComponent.prototype.updateDt = function (dt) {
-        dt.reset();
-    };
+    /* add(){
+         
+         this.httpService.post("/cliente", this.selected )
+                          .subscribe(
+                             result => {
+ 
+                                 this.result = result;
+                                 console.log("Mi info : " + this.result.status);
+ 
+                                 if(this.result.status == 100){
+                                     // MENSAJE SATISFACTORIO
+                                     this.selected.id = this.result.data;
+                                     this.clients.push(this.selected);       // Se le asigna la ID con la que se inserto
+                                     this.selected = new Cliente();
+                                 
+                                 }
+ 
+                                 
+                             },
+                             err => {
+                                 console.log(err);
+                             });
+         
+     }
+ 
+     
+ 
+     updateDt(dt: DataTable) {
+         dt.reset();
+     }   */
     ClienteComponent.prototype.cancel = function () {
         Object.assign(this.selected, this.row);
-        this.selected = new cliente_1.Cliente();
+        this.selected = new producto_1.Producto();
     };
     ClienteComponent.prototype.obtenerEdad = function (Fecha) {
         var elapsed = +new Date() - +new Date(Fecha);
@@ -126,7 +125,7 @@ var ClienteComponent = (function () {
             selector: 'cliente',
             templateUrl: '../../templates/clientes.html'
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, http_service_1.HttpService])
+        __metadata('design:paramtypes', [soap_service_1.SoapService])
     ], ClienteComponent);
     return ClienteComponent;
 }());

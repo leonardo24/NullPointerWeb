@@ -20,8 +20,8 @@ var LoginComponent = (function () {
         this.router = router;
         this.user = new usuario_1.Usuario(); // Inicializa la variable
         this.key = 'NullPointers_Key';
-        this.user.codigo = 'leo';
-        this.user.contrasena = '123';
+        this.user.Codigo = 'leo';
+        this.user.Contrasena = '123';
     }
     LoginComponent.prototype.ngOnInit = function () {
         if (this.soapService.isLogged()) {
@@ -30,11 +30,12 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.userLogin = function () {
         var _this = this;
-        this.soapService.loginUsuario("LoginUsuario", this.user.codigo, this.user.contrasena)
+        this.soapService.loginUsuario("LoginUsuario", this.user.Codigo, this.user.Contrasena)
             .subscribe(function (result) {
-            _this.result = JSON.parse(result);
-            console.log(_this.result);
-            if (_this.result.code == 100) {
+            var usuario = new usuario_1.Usuario();
+            usuario = JSON.parse(result);
+            console.log(usuario);
+            if (usuario.Id > 0) {
                 window.localStorage.setItem(_this.key, "1sdf4safsadfsd874f89sd4f89");
                 _this.router.navigate(['/dashboard']);
             }
@@ -49,7 +50,6 @@ var LoginComponent = (function () {
             moduleId: module.id,
             selector: 'login',
             templateUrl: '../../templates/login.html',
-            styleUrls: ['../../css/animate.css'],
             providers: [soap_service_1.SoapService]
         }), 
         __metadata('design:paramtypes', [soap_service_1.SoapService, router_1.Router])

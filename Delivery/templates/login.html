@@ -1,4 +1,46 @@
- <div class="container">
+ 
+ <div id="wrapper">
+		<div class="vertical-align-wrap">
+			<div class="vertical-align-middle">
+				<div class="auth-box ">
+					<div class="left">
+						<div class="content">
+							<div class="header">
+								<div class="logo text-center"><img src="../img/delivery.png" width="18%" height="15%" alt="Klorofil Logo"></div>
+								<p class="lead">Ingresa a tu cuenta</p>
+							</div>
+							<form class="form-auth-small" action="index.php">
+								<div class="form-group">
+									<label for="signin-email" class="control-label sr-only">Usuario</label>
+									<input type="text" class="form-control" [(ngModel)]="user.Codigo" name="Codigo" placeholder="Nombre de Usuario">
+								</div>
+								<div class="form-group">
+									<label for="signin-password" class="control-label sr-only">Contraseña</label>
+									<input type="password" class="form-control" [(ngModel)]="user.Contrasena"  name="Contrasena" placeholder="Contraseña">
+								</div>
+								<button (click)="userLogin()" class="btn btn-primary btn-lg btn-block">LOGIN</button>
+								<div class="bottom">
+									<span class="helper-text"><i class="fa fa-lock"></i> <a href="#">Olvidaste tu contraseña?</a></span>
+								</div>
+							</form>
+						</div>
+					</div>
+                    
+					<div class="right">
+						<div class="overlay"></div>
+						<div class="content text">
+							<h1 class="heading">Delivery System</h1>
+							<p>by NullPointers</p>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+ 
+ 
+ <!--<div class="container">
         <div class="row" >
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default" style="margin-top: 100px">
@@ -10,12 +52,11 @@
                         <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control"  [(ngModel)]="user.codigo" placeholder="Usuario" name="codigo" type="text" autofocus>
+                                    <input class="form-control"  [(ngModel)]="user.Codigo" placeholder="Usuario" name="Codigo" type="text" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" [(ngModel)]="user.contrasena" placeholder="Contraseña" name="contrasena" type="password">
+                                    <input class="form-control" [(ngModel)]="user.Contrasena" placeholder="Contraseña" name="Contrasena" type="password">
                                 </div>
-                                <!-- Change this to a button or input when using this as a form -->
                                 <a (click)="userLogin()" class="btn btn-lg btn-success btn-block">Login</a>
                             </fieldset>
                         </form>
@@ -40,4 +81,4 @@
 </div>
 
 
-</div>
+</div>-->

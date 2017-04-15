@@ -1,5 +1,41 @@
-<h3>Pagina de Clientes</h3>
 
+<div class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">Nuestros Productos</h3>
+    </div>
+    <div class="panel-body">
+        <button type="button" class="btn btn-primary" (click)="refresh()"><i class="fa fa-refresh"></i></button>
+        <button type="button" class="btn btn-primary" (click)="addModal()" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-pencil"></i></button>
+        <button type="button" class="btn btn-primary" (click)="delete()"><i class="fa fa-trash"></i></button>
+
+        <div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input #gb type="text" pInputText size="50" placeholder=" Buscar en productos">
+        </div>
+
+        <p-dataTable #dt emptyMessage="No se encontraron productos" selectionMode="single" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" [value]="productos" [globalFilter]="gb" [responsive]="true">
+           
+            <p-column field="Id" header="ID" [sortable]="true"></p-column>
+            <p-column field="Nombre" header="Nombre" [sortable]="true"></p-column>
+            <p-column field="Descripcion" header="Descripcion" [sortable]="true"></p-column>
+            <p-column field="Descuento" header="Descuento" [sortable]="true"></p-column>
+            <p-column field="Presentacion" header="Presentacion" [sortable]="true"></p-column>
+           
+            <p-column field="Activo" header="Activo" [sortable]="true">
+                <template let-client="rowData" pTemplate type="body">
+                    {{productos.Estado == 1 ? "Desactivado" : "Activado"}}
+                </template>
+            </p-column>
+
+        </p-dataTable>
+
+    </div>
+</div>
+
+
+
+<!--
 <button class="btn btn-primary" (click)="refresh()"> Refrescar la tabla</button>
 
 <div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
@@ -19,7 +55,7 @@
     <p-column field="apellidos" header="Apellidos" [sortable]="true"></p-column>
     <p-column field="nacimiento" header="Edad" [sortable]="true">
             <template let-client="rowData" pTemplate type="body">
-                <!--<span>{{client.nacimiento | date: 'dd/MM/yyyy'}}</span>-->
+               
                 <span>{{obtenerEdad(client.nacimiento)}}</span>
             </template>
     </p-column>
@@ -134,19 +170,17 @@
         </form>
        
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Close</button>  
-        <button id="btnAdd" class="btn btn-primary" (click)="add()" hidden>Añadir Cliente</button>
-        <button class="btn btn-primary" (click)="save()">Guardar</button>
-      </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Close</button>  
+                <button id="btnAdd" class="btn btn-primary" (click)="add()" hidden>Añadir Cliente</button>
+                <button class="btn btn-primary" (click)="save()">Guardar</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
     </div>
-  </div>
-</div>
-
-
-<div class="container">
-
-
-
-</div>
+    
+</div>-->

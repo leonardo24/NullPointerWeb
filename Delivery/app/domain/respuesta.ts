@@ -1,6 +1,6 @@
 export class Respuesta {
     constructor(
-        public code: number, 
+        public status: number, 
         public data: string, 
         public error: string
         ){}

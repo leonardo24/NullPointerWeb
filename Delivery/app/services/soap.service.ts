@@ -16,7 +16,8 @@ import 'rxjs/add/operator/catch';
 @Injectable()
 export class SoapService {
 
-    private url = "http://localhost:3401/Usuarios.svc";
+    private url_Usuarios = "http://localhost:3401/Usuarios.svc";
+    private url_Productos = "http://localhost:3401/Productos.svc";
     private options;    // Used for Post Parameters
     private key = 'NullPointers_Key';
    
@@ -34,8 +35,7 @@ export class SoapService {
     }
 
     loginUsuario(metodo, codigo, contrasena) : Observable<string> {
-
-        var parser = new DOMParser();    
+  
         var soapData = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">'+
                         '<s:Body>'+
                             '<' + metodo + ' xmlns="http://tempuri.org/">'+
@@ -50,12 +50,60 @@ export class SoapService {
             headers.append('Accept', 'text/xml');
         var options = new RequestOptions({ headers: headers });
 
-        return this.http.post(this.url, soapData, options)
+        return this.http.post(this.url_Usuarios, soapData, options)
                         // ...and calling .json() on the response to return data
                         .map(res => $(res.text()).find(metodo + 'Result').text())
                         //...errors if any
                         .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
 
      }
+
+     obtenerProductos(metodo) : Observable<string> {
+  
+        var soapData = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">'+
+                        '<s:Body>'+
+                            '<' + metodo + ' xmlns="http://tempuri.org/">'+
+                            '</' + metodo + '>'+
+                        '</s:Body>'+
+                    '</s:Envelope>';
+
+        var headers = new Headers({ 'SOAPAction': 'http://tempuri.org/IProductos/' + metodo });
+            headers.append('Content-Type', 'text/xml');
+            headers.append('Accept', 'text/xml');
+        var options = new RequestOptions({ headers: headers });
+
+        return this.http.post(this.url_Productos, soapData, options)
+                        // ...and calling .json() on the response to return data
+                        .map(res => $(res.text()).find(metodo + 'Result').text())
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+
+     }
+
+     eliminarProducto(metodo, id) : Observable<string> {
+  
+        var soapData = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">'+
+                        '<s:Body>'+
+                            '<' + metodo + ' xmlns="http://tempuri.org/">'+
+                            '<id>' + id + '</id>'+
+                            '</' + metodo + '>'+
+                        '</s:Body>'+
+                    '</s:Envelope>';
+
+        var headers = new Headers({ 'SOAPAction': 'http://tempuri.org/IProductos/' + metodo });
+            headers.append('Content-Type', 'text/xml');
+            headers.append('Accept', 'text/xml');
+        var options = new RequestOptions({ headers: headers });
+
+        return this.http.post(this.url_Productos, soapData, options)
+                        // ...and calling .json() on the response to return data
+                        .map(res => $(res.text()).find(metodo + 'Result').text())
+                        //...errors if any
+                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+
+     }
+
+
+     
 
 }
