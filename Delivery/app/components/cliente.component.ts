@@ -42,11 +42,39 @@ export class ClienteComponent{
         this.obtenerClientes();
     }
 
+    status(estado){
+        this.selected.Estado = estado;
+    }
+
     onRowSelect(event){
 
         this.row = Object.assign({}, event.data); // copiado
         this.selected = event.data;
         console.log(this.selected.Id);
+        
+    }
+
+    add(){
+
+        console.log(this.selected);
+        
+        this.soapService.anadirProducto("CrearProducto", this.selected)
+            .subscribe(
+                result => {
+                console.log(result);
+
+                var insertado : Producto = JSON.parse(result);
+
+                this.selected.Id = insertado.Id;
+                this.productos.push(this.selected);    
+                this.selected = new Producto();
+
+                $('#myModal').modal('hide');
+
+                },
+                err => {
+                console.log(err);
+                });
         
     }
 
@@ -58,10 +86,10 @@ export class ClienteComponent{
                 console.log(result);
 
                 var index = this.productos.map(function(x) {return x.Id; }).indexOf(this.selected.Id);
-                                if (index > -1) {
-                                    this.productos.splice(index, 1);
-                                }
-                                this.selected = new Producto();
+                if (index > -1) {
+                    this.productos.splice(index, 1);
+                }
+                this.selected = new Producto();
 
                 },
                 err => {
@@ -96,10 +124,10 @@ export class ClienteComponent{
         //Mostrar Modal Vacio
 
          this.selected = new Producto();
-         $("#dni").removeAttr("disabled");
-         $("#btnAdd").removeAttr("hidden");
+         $("#activo").addClass("active");
 
-         //this.selected.sexo = 0;            // Sexo por default
+         this.selected.CategoriaId = 1;
+         this.selected.Estado = 1;            // Sexo por default
          //this.selected.contrasena = "factory";      // Contraseña por defecto
          //this.selected.g_ruc = "10487743271";       // RUC POR DEFECTO
          
@@ -132,22 +160,15 @@ export class ClienteComponent{
         
     }
 
-    
+    */
 
     updateDt(dt: DataTable) {
         dt.reset();
-    }   */
+    }   
 
     cancel(){
-
         Object.assign(this.selected, this.row);
         this.selected = new Producto();
     }
  
-    
-    obtenerEdad(Fecha){
-        let elapsed = + new Date() - + new Date(Fecha);
-        return Fecha == null ? "--" : Math.floor((elapsed) / 1000 / 60 / 60 / 24 / 365.25);
-    }   
-
 }

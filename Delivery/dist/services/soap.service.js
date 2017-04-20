@@ -76,6 +76,32 @@ var SoapService = (function () {
             .map(function (res) { return $(res.text()).find(metodo + 'Result').text(); })
             .catch(function (error) { return Rx_1.Observable.throw(error.json().error || 'Server error'); });
     };
+    SoapService.prototype.anadirProducto = function (metodo, producto) {
+        console.log(producto);
+        var soapData = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
+            '<s:Body>' +
+            '<' + metodo + ' xmlns="http://tempuri.org/">' +
+            '<productos xmlns:d4p1="http://schemas.datacontract.org/2004/07/WCFNullPointers.Dominio" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">' +
+            '<d4p1:CategoriaId>' + producto.CategoriaId + '</d4p1:CategoriaId>' +
+            '<d4p1:Descripcion>' + producto.Descripcion + '</d4p1:Descripcion>' +
+            '<d4p1:Descuento>' + producto.Descuento + '</d4p1:Descuento>' +
+            '<d4p1:Estado>' + producto.Estado + '</d4p1:Estado>' +
+            '<d4p1:Nombre>' + producto.Nombre + '</d4p1:Nombre>' +
+            '<d4p1:Precio>' + producto.Precio + '</d4p1:Precio>' +
+            '<d4p1:Presentacion>' + producto.Presentacion + '</d4p1:Presentacion>' +
+            '</productos>' +
+            '</' + metodo + '>' +
+            '</s:Body>' +
+            '</s:Envelope>';
+        console.log(soapData);
+        var headers = new http_1.Headers({ 'SOAPAction': 'http://tempuri.org/IProductos/' + metodo });
+        headers.append('Content-Type', 'text/xml');
+        headers.append('Accept', 'text/xml');
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.url_Productos, soapData, options)
+            .map(function (res) { return $(res.text()).find(metodo + 'Result').text(); })
+            .catch(function (error) { return Rx_1.Observable.throw(error.json().error || 'Server error'); });
+    };
     SoapService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])

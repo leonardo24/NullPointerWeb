@@ -34,10 +34,28 @@ var ClienteComponent = (function () {
     ClienteComponent.prototype.refresh = function () {
         this.obtenerClientes();
     };
+    ClienteComponent.prototype.status = function (estado) {
+        this.selected.Estado = estado;
+    };
     ClienteComponent.prototype.onRowSelect = function (event) {
         this.row = Object.assign({}, event.data); // copiado
         this.selected = event.data;
         console.log(this.selected.Id);
+    };
+    ClienteComponent.prototype.add = function () {
+        var _this = this;
+        console.log(this.selected);
+        this.soapService.anadirProducto("CrearProducto", this.selected)
+            .subscribe(function (result) {
+            console.log(result);
+            var insertado = JSON.parse(result);
+            _this.selected.Id = insertado.Id;
+            _this.productos.push(_this.selected);
+            _this.selected = new producto_1.Producto();
+            $('#myModal').modal('hide');
+        }, function (err) {
+            console.log(err);
+        });
     };
     ClienteComponent.prototype.delete = function () {
         var _this = this;
@@ -74,9 +92,9 @@ var ClienteComponent = (function () {
     ClienteComponent.prototype.addModal = function () {
         //Mostrar Modal Vacio
         this.selected = new producto_1.Producto();
-        $("#dni").removeAttr("disabled");
-        $("#btnAdd").removeAttr("hidden");
-        //this.selected.sexo = 0;            // Sexo por default
+        $("#activo").addClass("active");
+        this.selected.CategoriaId = 1;
+        this.selected.Estado = 1; // Sexo por default
         //this.selected.contrasena = "factory";      // Contraseña por defecto
         //this.selected.g_ruc = "10487743271";       // RUC POR DEFECTO
     };
@@ -106,18 +124,13 @@ var ClienteComponent = (function () {
          
      }
  
-     
- 
-     updateDt(dt: DataTable) {
-         dt.reset();
-     }   */
+     */
+    ClienteComponent.prototype.updateDt = function (dt) {
+        dt.reset();
+    };
     ClienteComponent.prototype.cancel = function () {
         Object.assign(this.selected, this.row);
         this.selected = new producto_1.Producto();
-    };
-    ClienteComponent.prototype.obtenerEdad = function (Fecha) {
-        var elapsed = +new Date() - +new Date(Fecha);
-        return Fecha == null ? "--" : Math.floor((elapsed) / 1000 / 60 / 60 / 24 / 365.25);
     };
     ClienteComponent = __decorate([
         core_1.Component({
